@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   helper.c                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mel-yous <mel-yous@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/04/08 02:07:03 by mel-yous          #+#    #+#             */
-/*   Updated: 2023/04/13 23:24:58 by mel-yous         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "philo.h"
 
 int	ft_atoi(const char *str)
@@ -41,45 +29,15 @@ int	ft_atoi(const char *str)
 	return ((int)result * sign);
 }
 
-unsigned long	timestamp(void)
+void meas_cleaner(pthread_mutex_t *arr, int n)
 {
-	struct timeval	time;
-
-	gettimeofday(&time, NULL);
-	return (time.tv_sec * 1000 + time.tv_usec / 1000);
-}
-
-void	mili_sleep(unsigned int sleep_time)
-{
-	unsigned long	time;
-
-	time = timestamp();
-	while (timestamp() - time < sleep_time)
-		usleep(sleep_time / 10);
-}
-
-void	mutexed_print(char *msg, t_philo *philo)
-{
-	pthread_mutex_lock(&philo->args->misc_mutex[philo->id - 1]);
-	printf("%lu %d %s\n", timestamp() - philo->start_time, philo->id, msg);
-	pthread_mutex_unlock(&philo->args->misc_mutex[philo->id - 1]);
-}
-
-void	meas_cleaner(t_philo *philo, pthread_mutex_t *mutexes, int n)
-{
-	int	i;
+	int i;
 
 	i = 0;
-	if (!philo && mutexes)
+	while (i < n)
 	{
-		while (i < n)
-			pthread_mutex_destroy(&mutexes[i++]);
-		free(mutexes);
+		pthread_mutex_destroy(&arr[i]);
+		i++;
 	}
-	if (philo && !mutexes)
-	{
-		while (i < n)
-			pthread_mutex_destroy(philo[i++].left_fork);
-		free(philo);
-	}
+	free(arr);
 }
