@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philo.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mel-yous <mel-yous@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/05/16 12:01:38 by mel-yous          #+#    #+#             */
+/*   Updated: 2023/05/17 17:41:34 by mel-yous         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef PHILO_H
 
 # define PHILO_H
@@ -8,41 +20,53 @@
 # include <pthread.h>
 # include <sys/time.h>
 
+# define ERROR_MSG "Something is wrong !\n"
+
+typedef short	t_bool;
 # define FALSE 0
 # define TRUE 1
-typedef unsigned short t_bool;
 
-# define MUTEX_SIZE sizeof(pthread_mutex_t)
-# define THREAD_SIZE sizeof(pthread_t)
-# define PHILO_SIZE sizeof(t_philo)
-
-typedef struct s_args
+typedef struct s_data
 {
-    int nb_philo;
-    int time_die;
-    int time_eat;
-    int time_sleep;
-    int must_eat;
-} t_args;
+	int				nb_philo;
+	int				time_die;
+	int				time_eat;
+	int				time_sleep;
+	int				must_eat;
+	t_bool			is_alive;
 
-typedef struct s_utils
-{
-    pthread_mutex_t *print_mtx;
-    pthread_mutex_t *death_mtx;
-} t_utils;
+	pthread_mutex_t	print_lock;
+}	t_data;
 
 typedef struct s_philo
 {
-    unsigned int id;
-    pthread_mutex_t *l_fork;
-    pthread_mutex_t *r_fork;
-    struct s_args *args;
-    struct s_utils *utils;
-} t_philo;
+	unsigned int	id;
+	unsigned long	start_time;
+	unsigned long	last_meal;
+	unsigned int	meals_counter;
 
-t_bool	args_checker(int ac, char **av);
+	pthread_mutex_t	*l_fork;
+	pthread_mutex_t	*r_fork;
+	pthread_mutex_t	*death_lock;
 
-int	ft_atoi(const char *str);
-void meas_cleaner(pthread_mutex_t *arr, int n);
+	struct s_data	*data;
+}	t_philo;
+
+int				ft_atoi(const char *str);
+unsigned long	get_current_time(void);
+void			destroyer(pthread_mutex_t *arr, int n);
+void			mutexed_print(t_philo *philo, char *msg);
+void			my_usleep(unsigned int time);
+
+t_bool			args_checker(int ac, char **av);
+
+void			init_data(int ac, char **av, t_data *data);
+pthread_mutex_t	*init_mutexes(int nb_philo);
+t_philo			*init_philo(t_data *data, pthread_mutex_t *forks,
+					pthread_mutex_t *locks);
+
+void			*routine(void *param);
+pthread_t		*create_threads(t_philo *philo);
+void			death_checker(t_philo *philo, t_data *data);
 
 #endif
