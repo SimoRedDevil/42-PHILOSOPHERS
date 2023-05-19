@@ -6,7 +6,7 @@
 /*   By: mel-yous <mel-yous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/16 12:01:38 by mel-yous          #+#    #+#             */
-/*   Updated: 2023/05/17 17:41:34 by mel-yous         ###   ########.fr       */
+/*   Updated: 2023/05/19 10:30:30 by mel-yous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ typedef struct s_philo
 }	t_philo;
 
 int				ft_atoi(const char *str);
-unsigned long	get_current_time(void);
+unsigned long	get_time(void);
 void			destroyer(pthread_mutex_t *arr, int n);
 void			mutexed_print(t_philo *philo, char *msg);
 void			my_usleep(unsigned int time);
@@ -64,9 +64,11 @@ void			init_data(int ac, char **av, t_data *data);
 pthread_mutex_t	*init_mutexes(int nb_philo);
 t_philo			*init_philo(t_data *data, pthread_mutex_t *forks,
 					pthread_mutex_t *locks);
+t_bool			init_all(t_data *data, pthread_mutex_t **forks,
+					pthread_mutex_t **locks, t_philo **philo);
 
 void			*routine(void *param);
-pthread_t		*create_threads(t_philo *philo);
-void			death_checker(t_philo *philo, t_data *data);
+t_bool			create_threads(t_philo *philo, t_data *data,
+					pthread_mutex_t *forks, pthread_mutex_t *locks);
 
 #endif

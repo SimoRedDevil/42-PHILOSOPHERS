@@ -6,7 +6,7 @@
 #    By: mel-yous <mel-yous@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/16 12:01:16 by mel-yous          #+#    #+#              #
-#    Updated: 2023/05/17 17:53:58 by mel-yous         ###   ########.fr        #
+#    Updated: 2023/05/19 12:59:03 by mel-yous         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,15 +18,13 @@ SOURCES = helper.c initializer.c parsing.c philo.c threading.c
 OBJECTS = $(SOURCES:.c=.o)
 HEADER = philo.h
 
-FSANITIZE = -fsanitize=thread
-
 all: $(NAME)
 
 $(NAME): $(OBJECTS)
-	$(COMPILER) $(CFLAGS) $(OBJECTS) -o $(NAME)
+	$(COMPILER) $(OBJECTS) -o $(NAME)
 
 %.o: %.c $(HEADER)
-	$(COMPILER) $(CFLAGS) -c $< -o $@
+	$(COMPILER) -c $< -o $@
 
 clean:
 	rm -rf $(OBJECTS)
